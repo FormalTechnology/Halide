@@ -29,8 +29,14 @@ struct mtl_compile_options;
 WEAK mtl_buffer *new_buffer(mtl_device *device, size_t length) {
     typedef mtl_buffer *(*new_buffer_method)(objc_id device, objc_sel sel, size_t length, size_t options);
     new_buffer_method method = (new_buffer_method)&objc_msgSend;
-    return (*method)(device, sel_getUid("newBufferWithLength:options:"),
-                     length, 0  /* MTLResourceCPUCacheModeDefaultCache | MTLResourceStorageModeShared */);
+
+    objc_sel selector = sel_getUid("newBufferWithLength:options:");
+
+#if ARM_COMPILE
+    return (*method)(device, selector, length, 0 /* MTLResourceStorageModeShared */);
+#else
+    return (*method)(device, selector, length, 1 << 4 /* MTLResourceStorageModeManaged */);
+#endif
 }
 
 WEAK mtl_command_queue *new_command_queue(mtl_device *device) {
