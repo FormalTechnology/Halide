@@ -282,6 +282,7 @@ extern "C" {
 // - A call to halide_acquire_metal_context is followed by a matching call to
 //   halide_release_metal_context. halide_acquire_metal_context should block while a
 //   previous call (if any) has not yet been released via halide_release_metal_context.
+#if 0
 WEAK int halide_metal_acquire_context(void *user_context, mtl_device **device_ret,
                                       mtl_command_queue **queue_ret, bool create) {
     halide_assert(user_context, &thread_lock != NULL);
@@ -323,6 +324,8 @@ WEAK int halide_metal_release_context(void *user_context) {
     __sync_lock_release(&thread_lock);
     return 0;
 }
+    
+#endif
 
 } // extern "C"
 
